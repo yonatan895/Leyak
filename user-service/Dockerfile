@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM rust:1.68 as builder
+FROM rust:1.84 as builder
 WORKDIR /app
 
 # Set environment variables to force Cargo to use the Git CLI and HTTP/1.1.

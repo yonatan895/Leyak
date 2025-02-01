@@ -1,4 +1,4 @@
-FROM rust:1.68 as builder
+FROM rust:1.84 as builder
 WORKDIR /app
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 ENV GIT_HTTP_VERSION=HTTP/1.1

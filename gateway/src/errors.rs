@@ -3,7 +3,7 @@ use derive_more::Display;
 
 #[derive(Debug, Display)]
 pub enum GatewayError {
-    #[display(fmt = "Internal Server Error")]
+    #[display("Internal Server Error")]
     Internal,
 }
 

@@ -69,5 +69,5 @@ volumes:
 
 secrets:
   postgres_password:
-    file: ./secrets/postgres_password.txt
+    file: ./.secrets/postgres_password
 

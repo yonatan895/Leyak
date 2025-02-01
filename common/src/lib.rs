@@ -5,14 +5,12 @@ pub mod models {
     pub struct User {
         pub id: u32,
         pub username: String,
-        
     }
 
     #[derive(Serialize, Deserialize, Clone)]
     pub struct Tweet {
         pub id: u32,
         pub user_id: u32,
-        pub content: String,pub 
-        
+        pub content: String,
     }
 }

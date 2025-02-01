@@ -16,4 +16,3 @@ pub async fn register_user(new_user: web::Json<User>) -> impl Responder {
 pub async fn login_user() -> impl Responder {
     HttpResponse::Ok().body("User login stub")
 }
-
