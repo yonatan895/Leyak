@@ -1,0 +1,73 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: twitter
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB: twitter_clone
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    secrets:
+      - postgres_password
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+    depends_on:
+      - postgres
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+
+  tweet-service:
+    build:
+      context: .
+      dockerfile: tweet-service/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      MQ_URL: ${MQ_URL}
+      TWEET_SERVICE_PORT: ${TWEET_SERVICE_PORT}
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "${TWEET_SERVICE_PORT}:${TWEET_SERVICE_PORT}"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    env_file: .env
+    environment:
+      API_USER_SERVICE_URL: http://user-service:${USER_SERVICE_PORT}
+      API_TWEET_SERVICE_URL: http://tweet-service:${TWEET_SERVICE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      GATEWAY_PORT: ${GATEWAY_PORT}
+    depends_on:
+      - user-service
+      - tweet-service
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+
+volumes:
+  pgdata:
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+
