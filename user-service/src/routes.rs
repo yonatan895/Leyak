@@ -7,7 +7,7 @@ pub fn init_routes(cfg: &mut web::ServiceConfig) {
         web::resource("/register").route(web::post().to(register_user)),
     )
     .service(web::resource("/users/{id}").route(web::get().to(get_user)));
-
+}
 use crate::handlers::{register_user, login_user, health_check, index};
 
 pub fn init_routes(cfg: &mut web::ServiceConfig) {
