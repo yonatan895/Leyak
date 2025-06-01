@@ -31,7 +31,7 @@ RUN cargo fetch
 RUN cargo build --release --bin user-service
 
 # Stage 2: Create a minimal runtime image.
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 COPY --from=builder /app/user-service/target/release/user-service /usr/local/bin/user-service
 EXPOSE 8001
 CMD ["user-service"]
