@@ -4,6 +4,7 @@ This repository contains a simple microservice playground. The stack is orchestr
 
 ## Getting started
 
+
 1. Copy `.env.sample` to `.env` and adjust the values if necessary. The file contains
    defaults such as `POSTGRES_VERSION` and `RABBITMQ_VERSION` which control the container
    images used by Docker Compose.
