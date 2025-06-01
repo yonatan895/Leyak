@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Profile</title></head>
+<body>
+  <h1>User Profile</h1>
+  <div id="profile"></div>
+  <script>
+    fetch('/api/profile').then(r => r.json()).then(u => {
+      document.getElementById('profile').innerText = JSON.stringify(u);
+    });
+  </script>
+</body>
+</html>
