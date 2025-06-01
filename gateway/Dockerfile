@@ -12,7 +12,7 @@ COPY gateway/ gateway/
 WORKDIR /app/gateway
 RUN cargo fetch
 RUN cargo build --release --bin gateway
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 COPY --from=builder /app/gateway/target/release/gateway /usr/local/bin/gateway
 EXPOSE 8000
 CMD ["gateway"]

@@ -29,7 +29,7 @@ RUN cargo fetch
 RUN cargo build --release --bin tweet-service
 
 # Stage 2: Create the runtime image.
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 COPY --from=builder /app/tweet-service/target/release/tweet-service /usr/local/bin/tweet-service
 EXPOSE 8002
 CMD ["tweet-service"]
