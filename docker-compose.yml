@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   postgres:
     image: postgres:${POSTGRES_VERSION:-16}
@@ -15,6 +14,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:${RABBITMQ_VERSION:-3.12-management}
+
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -82,4 +82,3 @@ secrets:
     file: ./.secrets/google_client_id
   google_client_secret:
     file: ./.secrets/google_client_secret
-

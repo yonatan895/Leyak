@@ -1,18 +1,45 @@
-use crate::models::User;
+use crate::models::{NewUser, User};
 use actix_web::{web, HttpResponse, Responder};
-use std::sync::Mutex;
+use sqlx::PgPool;
 
-// For demonstration, we use an in-memory store.
-lazy_static::lazy_static! {
-    static ref USERS: Mutex<Vec<User>> = Mutex::new(vec![]);
+pub async fn register_user(
+    pool: web::Data<PgPool>,
+    new_user: web::Json<NewUser>,
+) -> impl Responder {
+    let result = sqlx::query_as::<_, User>(
+        "INSERT INTO users (github_id, username) VALUES ($1, $2) RETURNING id, github_id, username",
+    )
+    .bind(&new_user.github_id)
+    .bind(&new_user.username)
+    .fetch_one(pool.get_ref())
+    .await;
+
+    match result {
+        Ok(user) => HttpResponse::Ok().json(user),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
 }
 
-pub async fn register_user(new_user: web::Json<User>) -> impl Responder {
-    let mut users = USERS.lock().unwrap();
-    users.push(new_user.into_inner());
-    HttpResponse::Ok().body("User registered")
+pub async fn get_user(pool: web::Data<PgPool>, user_id: web::Path<i32>) -> impl Responder {
+    let result = sqlx::query_as::<_, User>(
+        "SELECT id, github_id, username FROM users WHERE id = $1",
+    )
+    .bind(*user_id)
+    .fetch_one(pool.get_ref())
+    .await;
+
+    match result {
+        Ok(user) => HttpResponse::Ok().json(user),
+        Err(_) => HttpResponse::NotFound().finish(),
+    }
 }
 
-pub async fn login_user() -> impl Responder {
-    HttpResponse::Ok().body("User login stub")
+/// Simple root endpoint so the service responds when accessed in a browser.
+pub async fn index() -> impl Responder {
+    HttpResponse::Ok().body("User service")
+}
+
+/// Health check endpoint.
+pub async fn health_check() -> impl Responder {
+    HttpResponse::Ok().body("User service is up")
 }

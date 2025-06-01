@@ -13,5 +13,3 @@ This repository contains a simple microservice playground. The stack is orchestr
 3. Run the services with `docker compose up --build`.
 
 After the stack is running, you can initiate authentication at `http://localhost:8000/auth/google`.
-
-Environment variables for non‑sensitive values can be tweaked in `.env`. Secrets are loaded from the files above.
