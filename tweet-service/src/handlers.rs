@@ -17,3 +17,13 @@ pub async fn get_tweets() -> impl Responder {
     let tweets = TWEETS.lock().unwrap();
     HttpResponse::Ok().json(tweets.clone())
 }
+
+/// Root endpoint so the service responds to browser requests.
+pub async fn index() -> impl Responder {
+    HttpResponse::Ok().body("Tweet service")
+}
+
+/// Health check endpoint.
+pub async fn health_check() -> impl Responder {
+    HttpResponse::Ok().body("Tweet service is up")
+}
