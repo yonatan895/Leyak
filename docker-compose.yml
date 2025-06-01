@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   postgres:
-    image: postgres:13
+    image: postgres:${POSTGRES_VERSION:-16}
     environment:
       POSTGRES_USER: twitter
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
@@ -14,7 +14,7 @@ services:
       - postgres_password
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:${RABBITMQ_VERSION:-3.12-management}
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -26,12 +26,14 @@ services:
     env_file: .env
     environment:
       DATABASE_URL: ${DATABASE_URL}
-      JWT_SECRET: ${JWT_SECRET}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
     depends_on:
       - postgres
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    secrets:
+      - jwt_secret
 
   tweet-service:
     build:
@@ -56,13 +58,19 @@ services:
     environment:
       API_USER_SERVICE_URL: http://user-service:${USER_SERVICE_PORT}
       API_TWEET_SERVICE_URL: http://tweet-service:${TWEET_SERVICE_PORT}
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
       JWT_SECRET: ${JWT_SECRET}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      OAUTH_REDIRECT_URL: ${OAUTH_REDIRECT_URL}
       GATEWAY_PORT: ${GATEWAY_PORT}
     depends_on:
       - user-service
       - tweet-service
     ports:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    secrets:
+      - jwt_secret
 
 volumes:
   pgdata:
@@ -70,4 +78,6 @@ volumes:
 secrets:
   postgres_password:
     file: ./.secrets/postgres_password
+  jwt_secret:
+    file: ./.secrets/jwt_secret
 
