@@ -33,3 +33,13 @@ pub async fn get_user(pool: web::Data<PgPool>, user_id: web::Path<i32>) -> impl 
         Err(_) => HttpResponse::NotFound().finish(),
     }
 }
+
+/// Simple root endpoint so the service responds when accessed in a browser.
+pub async fn index() -> impl Responder {
+    HttpResponse::Ok().body("User service")
+}
+
+/// Health check endpoint.
+pub async fn health_check() -> impl Responder {
+    HttpResponse::Ok().body("User service is up")
+}
