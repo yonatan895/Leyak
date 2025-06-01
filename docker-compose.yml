@@ -13,7 +13,7 @@ services:
       - postgres_password
 
   rabbitmq:
-    image: rabbitmq:${RABBITMQ_VERSION:-3.13-management}
+    image: rabbitmq:${RABBITMQ_VERSION:-3.12-management}
 
     ports:
       - "5672:5672"
@@ -59,11 +59,6 @@ services:
       API_USER_SERVICE_URL: http://user-service:${USER_SERVICE_PORT}
       API_TWEET_SERVICE_URL: http://tweet-service:${TWEET_SERVICE_PORT}
       JWT_SECRET_FILE: /run/secrets/jwt_secret
-      JWT_SECRET: ${JWT_SECRET}
-      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
-      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
-      OAUTH_REDIRECT_URL: ${OAUTH_REDIRECT_URL}
-
       GATEWAY_PORT: ${GATEWAY_PORT}
     depends_on:
       - user-service
@@ -72,6 +67,8 @@ services:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}"
     secrets:
       - jwt_secret
+      - google_client_id
+      - google_client_secret
 
 volumes:
   pgdata:
@@ -81,4 +78,7 @@ secrets:
     file: ./.secrets/postgres_password
   jwt_secret:
     file: ./.secrets/jwt_secret
-
+  google_client_id:
+    file: ./.secrets/google_client_id
+  google_client_secret:
+    file: ./.secrets/google_client_secret
