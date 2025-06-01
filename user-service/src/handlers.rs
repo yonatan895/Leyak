@@ -16,3 +16,13 @@ pub async fn register_user(new_user: web::Json<User>) -> impl Responder {
 pub async fn login_user() -> impl Responder {
     HttpResponse::Ok().body("User login stub")
 }
+
+/// Simple root endpoint so the service responds when accessed in a browser.
+pub async fn index() -> impl Responder {
+    HttpResponse::Ok().body("User service")
+}
+
+/// Health check endpoint.
+pub async fn health_check() -> impl Responder {
+    HttpResponse::Ok().body("User service is up")
+}
